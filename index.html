@@ -1,149 +1,505 @@
-
 <!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>_:: 0x80 ::_</title>
-  <meta name="author" content="Greg Leclercq">
+<meta charset="utf-8">
+<title>Greg Leclercq — Software Engineer</title>
+<meta name="author" content="Greg Leclercq">
+<meta name="description" content="Greg Leclercq — software engineer working on reliable and efficient systems. LLM internals, distributed systems, compilers, and low-level networking.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://greg.0x80.net/">
+<link rel="icon" href="/favicon.png">
 
-  
-  <meta name="description" content="Blog Archives Recent Posts GitHub Repos Status updating&#8230; @ggreg on GitHub $(document).ready(function(){ if (!window.jXHR){ var jxhr = document &hellip;">
-  
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Greg Leclercq — Software Engineer">
+<meta property="og:description" content="Software engineer working on reliable and efficient systems. LLM internals, distributed systems, compilers, and low-level networking.">
+<meta property="og:url" content="https://greg.0x80.net/">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/190738?v=4">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@ggregl">
 
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg:        #08090c;
+    --bg-2:      #0d0f14;
+    --card:      #101319;
+    --card-hi:   #161a23;
+    --line:      #1e2430;
+    --line-hi:   #2c3547;
+    --text:      #e6e9ef;
+    --muted:     #8b93a5;
+    --dim:       #626b7d;
+    --accent:    #6ea8fe;
+    --accent-2:  #a78bfa;
+  }
 
-  
-  <link rel="canonical" href="http://ggreg.github.io">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="_:: 0x80 ::_" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
 
-  
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.65 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
 
+  /* Ambient gradient wash + faint grid, both purely decorative. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(60rem 40rem at 15% -10%, rgba(110,168,254,.13), transparent 60%),
+      radial-gradient(50rem 36rem at 95% 8%,  rgba(167,139,250,.11), transparent 60%),
+      linear-gradient(180deg, var(--bg-2), var(--bg) 45%);
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: .55;
+    background-image:
+      linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(72rem 52rem at 50% 0%, #000, transparent 75%);
+    -webkit-mask-image: radial-gradient(72rem 52rem at 50% 0%, #000, transparent 75%);
+  }
+
+  .wrap {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: clamp(3rem, 9vw, 6.5rem) clamp(1.25rem, 5vw, 2.5rem) 4rem;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  code, .mono {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+                 "Liberation Mono", monospace;
+  }
+
+  /* ---------- header ---------- */
+
+  .intro { display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap; }
+
+  .avatar {
+    width: 84px; height: 84px;
+    border-radius: 50%;
+    border: 1px solid var(--line-hi);
+    background: var(--card);
+    flex: none;
+  }
+
+  .intro-text { flex: 1 1 20rem; min-width: 0; }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(1.9rem, 5vw, 2.6rem);
+    letter-spacing: -.022em;
+    line-height: 1.15;
+  }
+
+  .handle {
+    display: block;
+    margin-top: .3rem;
+    color: var(--dim);
+    font-size: .875rem;
+    letter-spacing: .02em;
+  }
+  .handle .sep { opacity: .45; padding: 0 .45rem; }
+
+  .tagline {
+    margin: 1.1rem 0 0;
+    max-width: 44rem;
+    color: var(--muted);
+    font-size: 1.0625rem;
+  }
+  .tagline strong { color: var(--text); font-weight: 600; }
+
+  .links {
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+  .links a {
+    display: inline-block;
+    padding: .34rem .75rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(255,255,255,.02);
+    color: var(--muted);
+    font-size: .8125rem;
+    transition: border-color .18s, color .18s, background .18s;
+  }
+  .links a:hover {
+    border-color: var(--line-hi);
+    background: var(--card-hi);
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  /* ---------- sections ---------- */
+
+  section { margin-top: clamp(3rem, 8vw, 4.5rem); }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: .9rem;
+    margin-bottom: 1.4rem;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: .8125rem;
+    font-weight: 600;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .section-head .rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--line), transparent);
+  }
+
+  /* ---------- project cards ---------- */
+
+  .grid {
+    display: grid;
+    gap: 1rem;
+    /* min() keeps the track from outgrowing a narrow viewport. */
+    grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+  }
+  /* Four featured projects read better as a 2×2 than as 3-plus-a-widow. */
+  #featured { grid-template-columns: repeat(auto-fit, minmax(min(24rem, 100%), 1fr)); }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1.15rem 1.25rem 1.05rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: linear-gradient(180deg, var(--card-hi), var(--card));
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: var(--line-hi);
+    box-shadow: 0 12px 28px -14px rgba(0,0,0,.85);
+  }
+  /* Whole card clickable, title stays the accessible link. */
+  .card .stretch::after { content: ""; position: absolute; inset: 0; border-radius: 12px; }
+
+  .card h3 {
+    margin: 0;
+    font-size: 1.0625rem;
+    letter-spacing: -.01em;
+  }
+  .card h3 a { color: var(--text); }
+  .card:hover h3 a { color: var(--accent); text-decoration: none; }
+
+  .card p {
+    margin: .55rem 0 0;
+    color: var(--muted);
+    font-size: .9375rem;
+    flex: 1;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem .9rem;
+    margin-top: 1rem;
+    color: var(--dim);
+    font-size: .78125rem;
+  }
+  .lang { display: inline-flex; align-items: center; gap: .4rem; }
+  .dot {
+    width: .55rem; height: .55rem;
+    border-radius: 50%;
+    background: var(--dim);
+    flex: none;
+  }
+  .dot[data-lang="Python"]           { background: #3572a5; }
+  .dot[data-lang="TypeScript"]       { background: #3178c6; }
+  .dot[data-lang="Zig"]              { background: #ec915c; }
+  .dot[data-lang="C++"]              { background: #f34b7d; }
+  .dot[data-lang="C"]                { background: #555555; }
+  .dot[data-lang="Jupyter Notebook"] { background: #da5b0b; }
+
+  .stars::before  { content: "★ "; }
+  .pushed:empty   { display: none; }
+  .stars:empty    { display: none; }
+
+  .tag {
+    padding: .1rem .5rem;
+    border: 1px solid var(--line-hi);
+    border-radius: 999px;
+    font-size: .6875rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+  }
+
+  /* ---------- archive list ---------- */
+
+  .archive { list-style: none; margin: 0; padding: 0; }
+  .archive li {
+    display: flex;
+    gap: .75rem;
+    align-items: baseline;
+    flex-wrap: wrap;
+    padding: .7rem 0;
+    border-top: 1px solid var(--line);
+    font-size: .9375rem;
+  }
+  .archive li:first-child { border-top: 0; }
+  .archive .name { font-weight: 500; }
+  .archive .desc { color: var(--muted); flex: 1 1 14rem; min-width: 0; }
+  .archive .yr { color: var(--dim); font-size: .8125rem; }
+
+  footer {
+    margin-top: clamp(3.5rem, 9vw, 5.5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    color: var(--dim);
+    font-size: .8125rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+    .card:hover { transform: none; }
+  }
+</style>
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">_:: 0x80 ::_</a></h1>
-  
-</hgroup>
+<body>
+<div class="wrap">
 
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:ggreg.github.io" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
+  <header class="intro">
+    <img class="avatar" src="https://avatars.githubusercontent.com/u/190738?s=200&v=4"
+         alt="" width="84" height="84" loading="lazy">
+    <div class="intro-text">
+      <h1>Greg Leclercq</h1>
+      <span class="handle mono">@ggreg<span class="sep">·</span>Mountain View, CA<span class="sep">·</span>_:: 0x80 ::_</span>
 
-</nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
-  
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-  </ul>
-</section>
+      <p class="tagline">
+        Software engineer at Roblox, working on <strong>reliable and efficient systems</strong>.
+        Lately: LLM internals and training performance, agent architectures, and RL for
+        infrastructure. Longer-standing interests in compilers, distributed systems, and
+        the layers close to the metal.
+      </p>
 
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
-  
-  <a href="https://github.com/ggreg">@ggreg</a> on GitHub
-  
-  <script type="text/javascript">
-    $(document).ready(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
+      <ul class="links">
+        <li><a href="https://github.com/ggreg">GitHub</a></li>
+        <li><a href="https://twitter.com/ggregl">Twitter</a></li>
+        <li><a href="mailto:greg@0x80.net">greg@0x80.net</a></li>
+        <li><a href="https://greg.0x80.net/ai_playground/">AI Playground docs</a></li>
+      </ul>
+    </div>
+  </header>
 
-        github.showRepos({
-            user: 'ggreg',
-            count: 0,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
-</section>
+  <section>
+    <div class="section-head">
+      <h2>Current work</h2>
+      <div class="rule"></div>
+    </div>
 
+    <div class="grid" id="featured">
 
+      <article class="card" data-repo="ai_playground">
+        <h3><a class="stretch" href="https://github.com/ggreg/ai_playground">ai_playground</a></h3>
+        <p>
+          A from-scratch LLaMA-style transformer used as a lab bench: grouped-query
+          attention, RoPE, RMSNorm, SwiGLU, KV cache — plus mixed-precision training,
+          distributed setups, and GPU performance work. Every notebook opens in Colab.
+        </p>
+        <div class="meta">
+          <span class="tag">Active</span>
+          <span class="lang"><i class="dot" data-lang="Python"></i>Python</span>
+          <span class="stars"></span>
+          <span class="pushed"></span>
+        </div>
+      </article>
 
+      <article class="card" data-repo="ai-deep-dive">
+        <h3><a class="stretch" href="https://github.com/ggreg/ai-deep-dive">ai-deep-dive</a></h3>
+        <p>
+          A coding agent built from first principles — no agent framework — together with
+          the model it runs on. The implementation, benchmarks, exercises, and the book
+          that explains them all share one source of truth.
+        </p>
+        <div class="meta">
+          <span class="tag">Active</span>
+          <span class="lang"><i class="dot" data-lang="TypeScript"></i>TypeScript</span>
+          <span class="stars"></span>
+          <span class="pushed"></span>
+        </div>
+      </article>
 
+      <article class="card" data-repo="atlas">
+        <h3><a class="stretch" href="https://github.com/ggreg/atlas">atlas</a></h3>
+        <p>
+          An RL-based Kubernetes autoscaler implementing the AWARE paper (USENIX ATC 2023).
+          DDPG for continuous horizontal and vertical scaling, meta-learning for workload
+          shifts, and a bootstrap scheduler so it can be rolled out safely.
+        </p>
+        <div class="meta">
+          <span class="lang"><i class="dot" data-lang="Python"></i>Python</span>
+          <span class="stars"></span>
+          <span class="pushed"></span>
+        </div>
+      </article>
 
-  
-</aside>
+      <article class="card" data-repo="zigvoy">
+        <h3><a class="stretch" href="https://github.com/ggreg/zigvoy">zigvoy</a></h3>
+        <p>
+          Learn Zig by building an L7 reverse proxy. Seven test-driven exercises; when the
+          last one goes green you have rate limiting, circuit breaking, health checks, and
+          metrics in a working proxy.
+        </p>
+        <div class="meta">
+          <span class="lang"><i class="dot" data-lang="Zig"></i>Zig</span>
+          <span class="stars"></span>
+          <span class="pushed"></span>
+        </div>
+      </article>
 
     </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Greg Leclercq -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
+  </section>
 
-</footer>
-  
+  <section>
+    <div class="section-head">
+      <h2>Selected earlier work</h2>
+      <div class="rule"></div>
+    </div>
 
+    <div class="grid" id="earlier">
 
+      <article class="card" data-repo="kaleidoscope">
+        <h3><a class="stretch" href="https://github.com/ggreg/kaleidoscope">kaleidoscope</a></h3>
+        <p>
+          An alternative take on the LLVM tutorial in C++ — the same toy-language compiler,
+          but with the engineering practice the original leaves out: unit tests, a real
+          build, and a style you could grow a language on.
+        </p>
+        <div class="meta">
+          <span class="lang"><i class="dot" data-lang="C++"></i>C++</span>
+          <span class="stars"></span>
+        </div>
+      </article>
 
+      <article class="card" data-repo="python-synapse">
+        <h3><a class="stretch" href="https://github.com/ggreg/python-synapse">python-synapse</a></h3>
+        <p>
+          Distributed communication for Python built around nodes and actors, abstracting
+          the transport underneath. ZeroMQ for the wire, JSON-RPC for the messages, and a
+          pub/sub announce service to find everyone else.
+        </p>
+        <div class="meta">
+          <span class="lang"><i class="dot" data-lang="Python"></i>Python</span>
+          <span class="stars"></span>
+        </div>
+      </article>
 
+      <article class="card" data-repo="libsimplenet">
+        <h3><a class="stretch" href="https://github.com/ggreg/libsimplenet">libsimplenet</a></h3>
+        <p>
+          A small C network library on top of libev — event-driven sockets without the
+          ceremony, for when you want the loop but not the framework.
+        </p>
+        <div class="meta">
+          <span class="lang"><i class="dot" data-lang="C"></i>C</span>
+          <span class="stars"></span>
+        </div>
+      </article>
 
+    </div>
 
+    <ul class="archive" style="margin-top:1.5rem">
+      <li>
+        <span class="name mono"><a href="https://github.com/ggreg/golang-coverage-typescript-action">golang-coverage-typescript-action</a></span>
+        <span class="desc">GitHub Action that surfaces Go code coverage in pull requests.</span>
+        <span class="yr">2023</span>
+      </li>
+      <li>
+        <span class="name mono"><a href="https://github.com/ggreg/sake">sake</a></span>
+        <span class="desc">A minimal ARM kernel, written to understand what a kernel actually needs.</span>
+        <span class="yr">2013</span>
+      </li>
+      <li>
+        <span class="name mono"><a href="https://github.com/ggreg/soba">soba</a></span>
+        <span class="desc">The bootloader that gets it running.</span>
+        <span class="yr">2013</span>
+      </li>
+    </ul>
+  </section>
 
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
+  <footer>
+    <span>© <span id="year">2026</span> Greg Leclercq</span>
+    <span><a href="https://github.com/ggreg?tab=repositories">All repositories on GitHub →</a></span>
+  </footer>
 
+</div>
 
+<script>
+(function () {
+  document.getElementById("year").textContent = new Date().getFullYear();
 
+  // Cards ship with hand-written descriptions; GitHub only supplies the volatile
+  // bits (stars, last push). If the request fails, the page is already complete.
+  var cards = {};
+  document.querySelectorAll(".card[data-repo]").forEach(function (el) {
+    cards[el.dataset.repo] = el;
+  });
 
+  function ago(iso) {
+    var days = Math.floor((Date.now() - new Date(iso)) / 864e5);
+    if (days <= 0)  return "updated today";
+    if (days === 1) return "updated yesterday";
+    if (days < 30)  return "updated " + days + "d ago";
+    var months = Math.round(days / 30.4);
+    if (months < 18) return "updated " + months + "mo ago";
+    return "updated " + Math.round(days / 365) + "y ago";
+  }
 
+  fetch("https://api.github.com/users/ggreg/repos?sort=pushed&per_page=100")
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (repos) {
+      repos.forEach(function (repo) {
+        var card = cards[repo.name];
+        if (!card) return;
+
+        var stars = card.querySelector(".stars");
+        if (stars && repo.stargazers_count > 0) {
+          stars.textContent = repo.stargazers_count;
+        }
+
+        var pushed = card.querySelector(".pushed");
+        if (pushed && repo.pushed_at) {
+          pushed.textContent = ago(repo.pushed_at);
+        }
+      });
+    })
+    .catch(function () { /* offline, rate-limited, whatever — static copy stands */ });
+})();
+</script>
 </body>
 </html>
