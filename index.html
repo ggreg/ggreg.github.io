@@ -254,23 +254,6 @@
     color: var(--accent-2);
   }
 
-  /* ---------- archive list ---------- */
-
-  .archive { list-style: none; margin: 0; padding: 0; }
-  .archive li {
-    display: flex;
-    gap: .75rem;
-    align-items: baseline;
-    flex-wrap: wrap;
-    padding: .7rem 0;
-    border-top: 1px solid var(--line);
-    font-size: .9375rem;
-  }
-  .archive li:first-child { border-top: 0; }
-  .archive .name { font-weight: 500; }
-  .archive .desc { color: var(--muted); flex: 1 1 14rem; min-width: 0; }
-  .archive .yr { color: var(--dim); font-size: .8125rem; }
-
   footer {
     margin-top: clamp(3.5rem, 9vw, 5.5rem);
     padding-top: 1.5rem;
@@ -432,24 +415,6 @@
       </article>
 
     </div>
-
-    <ul class="archive" style="margin-top:1.5rem">
-      <li>
-        <span class="name mono"><a href="https://github.com/ggreg/golang-coverage-typescript-action">golang-coverage-typescript-action</a></span>
-        <span class="desc">GitHub Action that surfaces Go code coverage in pull requests.</span>
-        <span class="yr">2023</span>
-      </li>
-      <li>
-        <span class="name mono"><a href="https://github.com/ggreg/sake">sake</a></span>
-        <span class="desc">A minimal ARM kernel, written to understand what a kernel actually needs.</span>
-        <span class="yr">2013</span>
-      </li>
-      <li>
-        <span class="name mono"><a href="https://github.com/ggreg/soba">soba</a></span>
-        <span class="desc">The bootloader that gets it running.</span>
-        <span class="yr">2013</span>
-      </li>
-    </ul>
   </section>
 
   <footer>
